@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, Column, Integer, String, Boolean
-import sqlalchemy
-from pydantic import BaseModel
-from migrations import Base
+from sqlalchemy.orm import declarative_base
+
+Base = declarative_base()
 
 # db model
 class Item(Base):
@@ -9,20 +9,5 @@ class Item(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
     description = Column(String)
-    qrCode = Column(String, unique=True)
+    qrCode = Column(String)
     isCollection = Column(Boolean, index=True)
-
-# Create model
-class ItemCreate(BaseModel):
-    name: str
-    description: str
-    qrCode: str
-    isCollection: bool
-    
-# Response model
-class ItemResponse(BaseModel):
-    id: int
-    name: str
-    description: str
-    qrCode: str
-    isCollection: bool
