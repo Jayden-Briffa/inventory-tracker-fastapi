@@ -2,6 +2,7 @@
 Tests for the Borrow endpoints.
 """
 
+# NOTE: Should we use itemId or qrCode? In the item routes we identify items with their qrCode but here it's the id?
 def test_create_borrow(client):
     populate_database_with_items(client)
     itemId = 1

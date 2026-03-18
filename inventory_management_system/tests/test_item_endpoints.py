@@ -1,7 +1,7 @@
 """
 Tests for the Item endpoints.
 """
-
+# NOTE: Should we accept all data as strings? This would simplify the frontend
 def test_create_item(client):
     qrCode = "cfcc62ec-d003-447f-936e-c2816cfa3291"
     name = "Test item"
@@ -67,6 +67,34 @@ def test_create_item_with_invalid_fields(client):
         ]
     }
 
+# We should prevent confusion by keeping item names unique. Multiple items of similar type can be given an arbitrary suffix, e.g. "laptop-1", "laptop-2"
+# Should we make this name-only or a name-collection status combiation?
+# Then could we also allow item lookup by name?
+def test_create_duplicate_item(client):
+    qrCode = "cfcc62ec-d103-447f-936e-c2816cfa3291"
+    name = "Test item"
+    description = "This is a test item."
+    isCollection = False
+    response = client.post(
+        "/items/",
+        json={"qrCode": qrCode, 
+              "name": name, 
+              "description": description,
+              "isCollection": isCollection
+              }
+    )
+    assert response.status_code == 422
+    assert response.json() == {
+        'detail': [
+        {
+            'input': name,
+            'loc': ['body', 'name'],
+            'msg': 'Item with this name already exists.',
+            "type": 'value_error',
+        },
+        ]
+    }
+
 def test_get_items(client):
     populate_database_with_items(client)
     response = client.get("/items/")
@@ -76,7 +104,7 @@ def test_get_items(client):
     assert data[0] == {'name': 'Test item 1',
                         'isCollection': True, 
                         'itemId': 1, 
-                        'qrCode': 'cfcc62ec-d003-447f-936e-c2816cfa3291', 
+                        'qrCode': 'cfcc62ec-d003-447f-936e-c2816cfa3291',
                         'description': 'This is test item 1.'}
     assert data[1] == {'name': 'Test item 2',
                         'isCollection': True, 

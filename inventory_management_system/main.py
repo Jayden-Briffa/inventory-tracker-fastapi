@@ -6,7 +6,7 @@ from . import models
 from typing import List
 
 app = FastAPI()
-
+# NEXT: Explore frontend implementation
 def find_item(qr, db):
     """Helper method to get an item or raise 404."""
     item = db.query(models.Item).filter(models.Item.qrCode == qr).first()
@@ -56,7 +56,7 @@ async def get_items(collection: bool | None = None, db = Depends(database.get_db
 @app.get("/items/{qr}", response_model=schemas.ItemResponse)
 async def get_item(qr, db = Depends(database.get_db)):
     """Get a specific item using its QR code."""
-    return find_item(qr, db)
+    # return find_item(qr, db)
 
 
 @app.patch("/items/{qr}", response_model=schemas.ItemResponse)
